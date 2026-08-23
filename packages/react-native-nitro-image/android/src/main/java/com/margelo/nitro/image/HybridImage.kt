@@ -25,6 +25,15 @@ import com.margelo.nitro.image.extensions.toMutable
 import java.io.File
 import java.nio.ByteBuffer
 import kotlin.math.ceil
+import kotlin.math.roundToInt
+
+private fun resolveImageQuality(quality: Double?): Int {
+    val resolved = quality ?: 100.0
+    if (!resolved.isFinite() || resolved < 0.0 || resolved > 100.0) {
+        throw Error("Image quality has to be between 0 and 100! (Received: $resolved)")
+    }
+    return resolved.roundToInt()
+}
 
 @Suppress("ConvertSecondaryConstructorToPrimary")
 @Keep
@@ -71,8 +80,8 @@ class HybridImage: HybridImageSpec {
     }
 
     override fun toEncodedImageData(format: ImageFormat, quality: Double?): EncodedImageData {
-        val quality = quality ?: 100.0
-        val byteBuffer = bitmap.compressInMemory(format, quality.toInt())
+        val resolvedQuality = resolveImageQuality(quality)
+        val byteBuffer = bitmap.compressInMemory(format, resolvedQuality)
         val arrayBuffer = ArrayBuffer.copy(byteBuffer)
         return EncodedImageData(arrayBuffer, width, height, format)
     }
@@ -170,17 +179,17 @@ class HybridImage: HybridImageSpec {
         format: ImageFormat,
         quality: Double?
     ): Promise<Unit> {
-        val quality = quality ?: 100.0
         return Promise.async {
-            bitmap.saveToFile(path.toFilePath(), format, quality.toInt())
+            val resolvedQuality = resolveImageQuality(quality)
+            bitmap.saveToFile(path.toFilePath(), format, resolvedQuality)
         }
     }
 
     override fun saveToTemporaryFileAsync(format: ImageFormat, quality: Double?): Promise<String> {
-        val quality = quality ?: 100.0
         return Promise.async {
+            val resolvedQuality = resolveImageQuality(quality)
             val tempFile = File.createTempFile("nitro_image_", ".${format.name.lowercase()}")
-            bitmap.saveToFile(tempFile.path, format, quality.toInt())
+            bitmap.saveToFile(tempFile.path, format, resolvedQuality)
             return@async tempFile.path
         }
     }

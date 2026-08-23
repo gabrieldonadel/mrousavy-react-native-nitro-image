@@ -10,7 +10,7 @@ import type {
  * @example
  * ```tsx
  * function App() {
- *   const image = useImage('https://picsum.photos/seed/123/400')
+ *   const { image } = useImage({ url: 'https://picsum.photos/seed/123/400' })
  *   return <NativeNitroImage image={image} style={{ width: 100, height: 100 }} />
  * }
  * ```

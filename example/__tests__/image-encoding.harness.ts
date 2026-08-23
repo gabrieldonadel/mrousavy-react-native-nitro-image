@@ -4,6 +4,23 @@ import { Images } from 'react-native-nitro-image'
 const makeImage = () =>
   Images.createBlankImage(16, 16, false, { r: 0, g: 0, b: 1, a: 1 })
 
+const makeDetailedImage = () => {
+  const size = 64
+  const bytes = new Uint8Array(size * size * 4)
+  for (let i = 0; i < size * size; i++) {
+    bytes[i * 4] = (i * 17) % 256
+    bytes[i * 4 + 1] = (i * 31) % 256
+    bytes[i * 4 + 2] = (i * 47) % 256
+    bytes[i * 4 + 3] = 255
+  }
+  return Images.loadFromRawPixelData({
+    buffer: bytes.buffer,
+    width: size,
+    height: size,
+    pixelFormat: 'RGBA',
+  })
+}
+
 const expectTemporaryPath = (path: string, extension: 'jpg' | 'png') => {
   expect(path.length).toBeGreaterThan(0)
   expect(path.startsWith('/')).toBe(true)
@@ -51,6 +68,45 @@ describe('Image - toEncodedImageData', () => {
     const encoded = await image.toEncodedImageDataAsync('jpg', 70)
     expect(encoded.imageFormat).toBe('jpg')
     expect(encoded.buffer.byteLength).toBeGreaterThan(0)
+  })
+
+  it('uses a 0...100 JPEG quality range with 100 as the default', () => {
+    const image = makeDetailedImage()
+    const lowest = image.toEncodedImageData('jpg', 0)
+    const highest = image.toEncodedImageData('jpg', 100)
+    const defaultQuality = image.toEncodedImageData('jpg')
+
+    expect(lowest.buffer.byteLength).toBeLessThan(highest.buffer.byteLength)
+    expect(Array.from(new Uint8Array(defaultQuality.buffer))).toEqual(
+      Array.from(new Uint8Array(highest.buffer)),
+    )
+  })
+
+  it('rounds fractional JPEG quality to the nearest integer', () => {
+    const image = makeDetailedImage()
+    const quality0 = image.toEncodedImageData('jpg', 0)
+    const quality0Point4 = image.toEncodedImageData('jpg', 0.4)
+    const quality99Point5 = image.toEncodedImageData('jpg', 99.5)
+    const quality100 = image.toEncodedImageData('jpg', 100)
+
+    expect(Array.from(new Uint8Array(quality0Point4.buffer))).toEqual(
+      Array.from(new Uint8Array(quality0.buffer)),
+    )
+    expect(Array.from(new Uint8Array(quality99Point5.buffer))).toEqual(
+      Array.from(new Uint8Array(quality100.buffer)),
+    )
+  })
+
+  it('rejects quality values outside 0...100', async () => {
+    const image = makeImage()
+    expect(() => image.toEncodedImageData('jpg', -0.5)).toThrow()
+    expect(() => image.toEncodedImageData('jpg', 100.5)).toThrow()
+    await expect(
+      image.toEncodedImageDataAsync('jpg', -0.5),
+    ).rejects.toBeDefined()
+    await expect(
+      image.saveToTemporaryFileAsync('jpg', 100.5),
+    ).rejects.toBeDefined()
   })
 })
 

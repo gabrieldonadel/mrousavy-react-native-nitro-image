@@ -13,7 +13,7 @@ extension UIImage {
   /**
    * Returns encoded Image data of this Image (JPG, PNG, ...)
    */
-  func toEncodedImageData(format: ImageFormat, quality: Double = 1.0) throws -> EncodedImageData {
+  func toEncodedImageData(format: ImageFormat, quality: Double) throws -> EncodedImageData {
     let data = try getData(in: format, quality: quality)
     let arrayBuffer = try ArrayBuffer.copy(data: data)
     return EncodedImageData(buffer: arrayBuffer,

@@ -11,8 +11,8 @@ export interface AsyncImageLoadOptions {
   priority?: AsyncImagePriority
 
   /**
-   * Forces a cache refresh even if the URL is changed.
-   * Use this if you cannot make your URLs static.
+   * Forces a cache refresh even if the URL has not changed.
+   * Use this when the content can change without a cache-busting URL.
    * @default false
    */
   forceRefresh?: boolean
