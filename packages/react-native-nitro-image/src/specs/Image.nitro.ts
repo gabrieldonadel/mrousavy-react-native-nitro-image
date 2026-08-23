@@ -69,7 +69,7 @@ export interface Image
   readonly height: number
 
   /**
-   * Returns an {@linkcode ArrayBuffer} containing the raw pixel data of the Image.
+   * Returns {@linkcode RawPixelData} containing the raw pixel data of the Image in an {@linkcode ArrayBuffer}.
    * @note The returned {@linkcode PixelFormat} describes the literal byte order in memory -
    * always read it instead of assuming a fixed format. It is typically
    * {@linkcode PixelFormat | 'RGBA'} on Android (the memory layout of `ARGB_8888` Bitmaps),
@@ -96,10 +96,10 @@ export interface Image
   toRawPixelDataAsync(allowGpu?: boolean): Promise<RawPixelData>
 
   /**
-   * Returns an {@linkcode ArrayBuffer} containing the encoded data of an Image in
+   * Returns {@linkcode EncodedImageData} containing the encoded data of an Image in
    * the requested container {@linkcode format}.
    * @note If the requested {@linkcode format} is {@linkcode ImageFormat | 'jpg'}, you can use
-   * {@linkcode quality} to compress the image. Quality ranges from 0(most)...100(least). In {@linkcode ImageFormat | 'png'}, the
+   * {@linkcode quality} to compress the image. Quality ranges from `0` (worst) to `100` (best) and defaults to `100`. In {@linkcode ImageFormat | 'png'}, the
    * {@linkcode quality} flag is ignored.
    * @example
    * ```ts
@@ -127,7 +127,7 @@ export interface Image
    * the newly created {@linkcode Image}.
    *
    * @param degrees The degrees to rotate the Image. May be any arbitrary number, and can be negative.
-   * @param allowFastFlagRotation When {@linkcode allowFastFlagRotation} is set to `true`, the implementation may choose to only change the orientation flag on the underying image instead of physicaly rotating the buffers. This may only work when {@linkcode degrees} is a multiple of `90`, and will only apply rotation when displaying the Image (via view transforms) or exporting it to a file (via EXIF flags). The actual buffer (e.g. obtained via {@linkcode toRawPixelData | toRawPixelData()}) may remain untouched.
+   * @param allowFastFlagRotation When {@linkcode allowFastFlagRotation} is set to `true`, the implementation may choose to only change the orientation flag on the underlying image instead of physically rotating the buffers. This may only work when {@linkcode degrees} is a multiple of `90`, and will only apply rotation when displaying the Image (via view transforms) or exporting it to a file (via EXIF flags). The actual buffer (e.g. obtained via {@linkcode toRawPixelData | toRawPixelData()}) may remain untouched.
    * @example
    * ```ts
    * const upsideDown = image.rotate(180)
@@ -166,11 +166,11 @@ export interface Image
   /**
    * Saves this image in the given {@linkcode ImageFormat} to the given filesystem {@linkcode path}.
    *
-   * @param path A filesystem path including filename and extension - for example: `/tmp/image.jpg`. This is not a URL, so omit the `file://` prefix. The file extension is not authorative and does not affect encoding/file format - but typically it should be the same extension as the {@linkcode ImageFormat} passed to the {@linkcode format} parameter.
+   * @param path A filesystem path including filename and extension - for example: `/tmp/image.jpg`. This is not a URL, so omit the `file://` prefix. The file extension is not authoritative and does not affect encoding/file format, but typically it should match the {@linkcode ImageFormat} passed to the {@linkcode format} parameter.
    *
    * @param format The {@linkcode ImageFormat} to use for encoding this Image to a file.
    *
-   * @param quality The target Image quality to use, from `0` (worst quality/highest compression) to `100` (best quality/least compression). {@linkcode quality} is ignored for non-compressable {@linkcode ImageFormat}s, such as {@linkcode ImageFormat | 'png'}.
+   * @param quality The target Image quality to use, from `0` (worst quality/highest compression) to `100` (best quality/least compression). {@linkcode quality} is ignored for non-compressible {@linkcode ImageFormat}s, such as {@linkcode ImageFormat | 'png'}.
    *
    * @example
    * ```ts
@@ -188,7 +188,7 @@ export interface Image
    *
    * @param format The {@linkcode ImageFormat} to use for encoding this Image to a file. The given {@linkcode ImageFormat} will also be used as the generated file's extension.
    *
-   * @param quality The target Image quality to use, from `0` (worst quality/highest compression) to `100` (best quality/least compression). {@linkcode quality} is ignored for non-compressable {@linkcode ImageFormat}s, such as {@linkcode ImageFormat | 'png'}.
+   * @param quality The target Image quality to use, from `0` (worst quality/highest compression) to `100` (best quality/least compression). {@linkcode quality} is ignored for non-compressible {@linkcode ImageFormat}s, such as {@linkcode ImageFormat | 'png'}.
    *
    * @returns A filesystem path such as `/tmp/image.jpg`. This is not a URL, so the returned path does not have a `file://` prefix. If another API needs a file URL, prepend `file://`, for example `fetch('file://' + path)`.
    *
@@ -206,7 +206,7 @@ export interface Image
   /**
    * Encodes this Image into a ThumbHash.
    * To convert the returned ThumbHash to a string, use `thumbHashToBase64String(...)`.
-   * @note To keep this efficient, {@linkcode resize} this image to a small size (<100x100) first.
+   * @note Resize this image to `100x100` or smaller first. Android rejects larger Images.
    * @example
    * ```ts
    * const small = image.resize(100, 100)

@@ -11,7 +11,7 @@ import type { ImageLoader } from './ImageLoader.nitro'
  * - `cover`: Scale the content to fill the size of the view. Some portion of the content may be clipped to fill the view’s bounds.
  * - `contain`: Scale the content to fit the size of the view by maintaining the aspect ratio. Any remaining area of the view’s bounds is transparent.
  * - `center`: Center the content in the view’s bounds, keeping the proportions the same.
- * - `stretch`: Scale the content to fit the size of itself by changing the aspect ratio of the content if necessary.
+ * - `stretch`: Scale the content to fill the view's bounds, changing the content's aspect ratio if necessary.
  */
 export type ResizeMode = 'cover' | 'contain' | 'center' | 'stretch'
 
@@ -51,7 +51,7 @@ export interface NativeNitroImageViewProps extends HybridViewProps {
    * @default undefined
    * @example
    * ```tsx
-   * <NitroImage recyclingKey={url} />
+   * <NitroImage image={{ url }} recyclingKey={url} />
    * ```
    */
   recyclingKey?: string
