@@ -99,8 +99,9 @@ export interface Image
    * Returns {@linkcode EncodedImageData} containing the encoded data of an Image in
    * the requested container {@linkcode format}.
    * @note If the requested {@linkcode format} is {@linkcode ImageFormat | 'jpg'}, you can use
-   * {@linkcode quality} to compress the image. Quality ranges from `0` (worst) to `100` (best) and defaults to `100`. In {@linkcode ImageFormat | 'png'}, the
+   * {@linkcode quality} to compress the image. Quality ranges from `0` (worst) to `100` (best), rounds to the nearest integer, and defaults to `100`. In {@linkcode ImageFormat | 'png'}, the
    * {@linkcode quality} flag is ignored.
+   * @throws If {@linkcode quality} is outside the `0...100` range.
    * @example
    * ```ts
    * const compressed = image.toEncodedImageData('jpg', 70)
@@ -170,7 +171,8 @@ export interface Image
    *
    * @param format The {@linkcode ImageFormat} to use for encoding this Image to a file.
    *
-   * @param quality The target Image quality to use, from `0` (worst quality/highest compression) to `100` (best quality/least compression). {@linkcode quality} is ignored for non-compressible {@linkcode ImageFormat}s, such as {@linkcode ImageFormat | 'png'}.
+   * @param quality The target Image quality to use, from `0` (worst quality/highest compression) to `100` (best quality/least compression), rounded to the nearest integer. Defaults to `100`. {@linkcode quality} is ignored for non-compressible {@linkcode ImageFormat}s, such as {@linkcode ImageFormat | 'png'}.
+   * @throws If {@linkcode quality} is outside the `0...100` range.
    *
    * @example
    * ```ts
@@ -188,7 +190,8 @@ export interface Image
    *
    * @param format The {@linkcode ImageFormat} to use for encoding this Image to a file. The given {@linkcode ImageFormat} will also be used as the generated file's extension.
    *
-   * @param quality The target Image quality to use, from `0` (worst quality/highest compression) to `100` (best quality/least compression). {@linkcode quality} is ignored for non-compressible {@linkcode ImageFormat}s, such as {@linkcode ImageFormat | 'png'}.
+   * @param quality The target Image quality to use, from `0` (worst quality/highest compression) to `100` (best quality/least compression), rounded to the nearest integer. Defaults to `100`. {@linkcode quality} is ignored for non-compressible {@linkcode ImageFormat}s, such as {@linkcode ImageFormat | 'png'}.
+   * @throws If {@linkcode quality} is outside the `0...100` range.
    *
    * @returns A filesystem path such as `/tmp/image.jpg`. This is not a URL, so the returned path does not have a `file://` prefix. If another API needs a file URL, prepend `file://`, for example `fetch('file://' + path)`.
    *
