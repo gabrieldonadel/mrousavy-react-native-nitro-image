@@ -27,9 +27,9 @@ namespace margelo::nitro::image { class HybridImageSpec; }
 #include <NitroModules/Promise.hpp>
 #include "EncodedImageData.hpp"
 #include "ImageFormat.hpp"
+#include <string>
 #include <memory>
 #include "HybridImageSpec.hpp"
-#include <string>
 #include <NitroModules/ArrayBuffer.hpp>
 
 namespace margelo::nitro::image {
@@ -68,6 +68,7 @@ namespace margelo::nitro::image {
       virtual std::shared_ptr<Promise<RawPixelData>> toRawPixelDataAsync(std::optional<bool> allowGpu) = 0;
       virtual EncodedImageData toEncodedImageData(ImageFormat format, std::optional<double> quality) = 0;
       virtual std::shared_ptr<Promise<EncodedImageData>> toEncodedImageDataAsync(ImageFormat format, std::optional<double> quality) = 0;
+      virtual std::shared_ptr<Promise<std::string>> toBase64Async(ImageFormat format, std::optional<double> quality) = 0;
       virtual std::shared_ptr<HybridImageSpec> resize(double width, double height) = 0;
       virtual std::shared_ptr<Promise<std::shared_ptr<HybridImageSpec>>> resizeAsync(double width, double height) = 0;
       virtual std::shared_ptr<HybridImageSpec> rotate(double degrees, std::optional<bool> allowFastFlagRotation) = 0;

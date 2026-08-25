@@ -20,6 +20,7 @@ import com.margelo.nitro.image.extensions.pixelFormat
 import com.margelo.nitro.image.extensions.saveToFile
 import com.margelo.nitro.image.extensions.toFilePath
 import com.margelo.nitro.image.extensions.toByteBuffer
+import com.margelo.nitro.image.extensions.toBase64
 import com.margelo.nitro.image.extensions.toCpuAccessible
 import com.margelo.nitro.image.extensions.toMutable
 import java.io.File
@@ -90,6 +91,13 @@ class HybridImage: HybridImageSpec {
         quality: Double?
     ): Promise<EncodedImageData> {
         return Promise.async { toEncodedImageData(format, quality) }
+    }
+
+    override fun toBase64Async(format: ImageFormat, quality: Double?): Promise<String> {
+        return Promise.parallel {
+            val resolvedQuality = resolveImageQuality(quality)
+            bitmap.toBase64(format, resolvedQuality)
+        }
     }
 
     override fun rotate(degrees: Double, allowFastFlagRotation: Boolean?): HybridImageSpec {

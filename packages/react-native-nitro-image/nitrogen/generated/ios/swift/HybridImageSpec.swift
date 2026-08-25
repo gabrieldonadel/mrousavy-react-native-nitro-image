@@ -18,6 +18,7 @@ public protocol HybridImageSpec_protocol: HybridObject {
   func toRawPixelDataAsync(allowGpu: Bool?) throws -> Promise<RawPixelData>
   func toEncodedImageData(format: ImageFormat, quality: Double?) throws -> EncodedImageData
   func toEncodedImageDataAsync(format: ImageFormat, quality: Double?) throws -> Promise<EncodedImageData>
+  func toBase64Async(format: ImageFormat, quality: Double?) throws -> Promise<String>
   func resize(width: Double, height: Double) throws -> (any HybridImageSpec)
   func resizeAsync(width: Double, height: Double) throws -> Promise<(any HybridImageSpec)>
   func rotate(degrees: Double, allowFastFlagRotation: Bool?) throws -> (any HybridImageSpec)
