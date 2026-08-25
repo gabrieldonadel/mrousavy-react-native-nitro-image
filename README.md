@@ -241,7 +241,7 @@ Images can be compressed using the `jpg` container format - either in-memory or 
 const image      = ...
 const path       = await image.saveToTemporaryFileAsync('jpg', 50) // 50% compression
 const compressed = await image.toEncodedImageData('jpg', 50)       // 50% compression
-const base64     = await image.toBase64Async('jpg', 50)             // 50% compression
+const base64     = await image.toBase64Async('jpg', 50)            // 50% compression
 ```
 
 #### HEIC/HEIF
