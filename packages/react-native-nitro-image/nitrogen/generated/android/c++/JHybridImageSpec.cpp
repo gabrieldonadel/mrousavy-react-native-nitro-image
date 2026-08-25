@@ -30,11 +30,11 @@ namespace margelo::nitro::image { class HybridImageSpec; }
 #include "JEncodedImageData.hpp"
 #include "ImageFormat.hpp"
 #include "JImageFormat.hpp"
+#include <string>
 #include <memory>
 #include "HybridImageSpec.hpp"
 #include "JHybridImageSpec.hpp"
 #include <NitroModules/JUnit.hpp>
-#include <string>
 #include <optional>
 
 namespace margelo::nitro::image {
@@ -113,6 +113,22 @@ namespace margelo::nitro::image {
       __result->cthis()->addOnResolvedListener([=](const jni::alias_ref<jni::JObject>& __boxedResult) {
         auto __result = jni::static_ref_cast<JEncodedImageData>(__boxedResult);
         __promise->resolve(__result->toCpp());
+      });
+      __result->cthis()->addOnRejectedListener([=](const jni::alias_ref<jni::JThrowable>& __throwable) {
+        jni::JniException __jniError(__throwable);
+        __promise->reject(std::make_exception_ptr(__jniError));
+      });
+      return __promise;
+    }();
+  }
+  std::shared_ptr<Promise<std::string>> JHybridImageSpec::toBase64Async(ImageFormat format, std::optional<double> quality) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(jni::alias_ref<JImageFormat> /* format */, jni::alias_ref<jni::JDouble> /* quality */)>("toBase64Async");
+    auto __result = method(_javaPart, JImageFormat::fromCpp(format), quality.has_value() ? jni::JDouble::valueOf(quality.value()) : nullptr);
+    return [&]() {
+      auto __promise = Promise<std::string>::create();
+      __result->cthis()->addOnResolvedListener([=](const jni::alias_ref<jni::JObject>& __boxedResult) {
+        auto __result = jni::static_ref_cast<jni::JString>(__boxedResult);
+        __promise->resolve(__result->toStdString());
       });
       __result->cthis()->addOnRejectedListener([=](const jni::alias_ref<jni::JThrowable>& __throwable) {
         jni::JniException __jniError(__throwable);

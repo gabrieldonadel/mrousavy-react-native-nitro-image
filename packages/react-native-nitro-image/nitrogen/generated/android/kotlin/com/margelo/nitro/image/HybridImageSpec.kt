@@ -55,6 +55,10 @@ abstract class HybridImageSpec: HybridObject() {
   
   @DoNotStrip
   @Keep
+  abstract fun toBase64Async(format: ImageFormat, quality: Double?): Promise<String>
+  
+  @DoNotStrip
+  @Keep
   abstract fun resize(width: Double, height: Double): HybridImageSpec
   
   @DoNotStrip

@@ -60,6 +60,14 @@ public extension NativeImage {
     }
   }
 
+  func toBase64Async(format: ImageFormat, quality: Double?) -> Promise<String> {
+    let image = uiImage
+    let resolvedQuality = quality ?? 100
+    return Promise.parallel(.global(qos: .userInitiated)) {
+      return try image.toBase64(format: format, quality: resolvedQuality)
+    }
+  }
+
   func rotate(degrees: Double, allowFastFlagRotation: Bool?) -> any HybridImageSpec {
     if allowFastFlagRotation == true,
        degrees.truncatingRemainder(dividingBy: 90) == 0,

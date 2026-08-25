@@ -20,6 +20,7 @@ namespace margelo::nitro::image {
       prototype.registerHybridMethod("toRawPixelDataAsync", &HybridImageSpec::toRawPixelDataAsync);
       prototype.registerHybridMethod("toEncodedImageData", &HybridImageSpec::toEncodedImageData);
       prototype.registerHybridMethod("toEncodedImageDataAsync", &HybridImageSpec::toEncodedImageDataAsync);
+      prototype.registerHybridMethod("toBase64Async", &HybridImageSpec::toBase64Async);
       prototype.registerHybridMethod("resize", &HybridImageSpec::resize);
       prototype.registerHybridMethod("resizeAsync", &HybridImageSpec::resizeAsync);
       prototype.registerHybridMethod("rotate", &HybridImageSpec::rotate);

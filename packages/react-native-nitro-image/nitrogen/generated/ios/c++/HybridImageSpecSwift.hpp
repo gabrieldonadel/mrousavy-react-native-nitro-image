@@ -33,9 +33,9 @@ namespace margelo::nitro::image { class HybridImageSpec; }
 #include <NitroModules/Promise.hpp>
 #include "EncodedImageData.hpp"
 #include "ImageFormat.hpp"
+#include <string>
 #include <memory>
 #include "HybridImageSpec.hpp"
-#include <string>
 
 #include "NitroImage-Swift-Cxx-Umbrella.hpp"
 
@@ -118,6 +118,14 @@ namespace margelo::nitro::image {
     }
     inline std::shared_ptr<Promise<EncodedImageData>> toEncodedImageDataAsync(ImageFormat format, std::optional<double> quality) override {
       auto __result = _swiftPart.toEncodedImageDataAsync(static_cast<int>(format), quality);
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+      auto __value = std::move(__result.value());
+      return __value;
+    }
+    inline std::shared_ptr<Promise<std::string>> toBase64Async(ImageFormat format, std::optional<double> quality) override {
+      auto __result = _swiftPart.toBase64Async(static_cast<int>(format), quality);
       if (__result.hasError()) [[unlikely]] {
         std::rethrow_exception(__result.error());
       }

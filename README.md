@@ -156,6 +156,21 @@ const imageData       = await image.toEncodedImageData('jpg', 90)
 const sameImageCopied = await Images.loadFromEncodedImageData(imageData)
 ```
 
+#### Base64 (`string`)
+
+The `Image` type can be encoded to a standard Base64 string using a container format like `jpg`, `png` or `heic`:
+
+```ts
+const image   = ...
+const base64  = await image.toBase64Async('jpg', 90)
+const dataUrl = `data:image/jpeg;base64,${base64}`
+```
+
+`toBase64Async(...)` returns a padded Base64 payload without line breaks or a data URL prefix.
+
+> [!NOTE]
+> Base64 is larger than binary image data. Prefer `toEncodedImageDataAsync(...)` unless the destination specifically requires a string.
+
 #### Resizing
 
 An `Image` can be resized entirely in-memory, without ever writing to- or reading from- a file:
@@ -226,6 +241,7 @@ Images can be compressed using the `jpg` container format - either in-memory or 
 const image      = ...
 const path       = await image.saveToTemporaryFileAsync('jpg', 50) // 50% compression
 const compressed = await image.toEncodedImageData('jpg', 50)       // 50% compression
+const base64     = await image.toBase64Async('jpg', 50)             // 50% compression
 ```
 
 #### HEIC/HEIF

@@ -114,6 +114,21 @@ export interface Image
   ): Promise<EncodedImageData>
 
   /**
+   * Encodes this Image in the requested {@linkcode ImageFormat} and returns the encoded bytes as a Base64 string.
+   * @note This method re-encodes the current Image. It does not return the original file bytes or preserve all original metadata.
+   * @note The returned string uses standard padded Base64 without line breaks or a data URL prefix.
+   * @param format The {@linkcode ImageFormat} to use for encoding this Image.
+   * @param quality The target Image quality from `0` (worst quality/highest compression) to `100` (best quality/least compression), rounded to the nearest integer. Defaults to `100`. {@linkcode quality} is ignored for non-compressible {@linkcode ImageFormat}s, such as {@linkcode ImageFormat | 'png'}.
+   * @throws If {@linkcode quality} is outside the `0...100` range.
+   * @example
+   * ```ts
+   * const base64 = await image.toBase64Async('jpg', 80)
+   * const dataUrl = `data:image/jpeg;base64,${base64}`
+   * ```
+   */
+  toBase64Async(format: ImageFormat, quality?: number): Promise<string>
+
+  /**
    * Resizes this Image into a new image with the new given {@linkcode width} and {@linkcode height}.
    * @example
    * ```ts
